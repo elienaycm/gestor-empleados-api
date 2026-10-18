@@ -2,27 +2,29 @@ using MiWebAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddSingleton<ProductoData>();
+builder.Services.AddSingleton<EmpleadoData>();
+builder.Services.AddSingleton<ProveedorData>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<EmpleadoData>();
-
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("NuevaPolitica", app =>
+    options.AddPolicy("NuevaPolitica", policy =>
     {
-        app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
+builder.Services.AddScoped<CursoData>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,7 +33,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("NuevaPolitica");
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
